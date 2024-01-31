@@ -8,23 +8,22 @@ services:
       context: ./node
     image: vweisscobos/node
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
-    container_name: node
+    container_name: app
     networks:
       - app
     depends_on:
       - db
 
   db:
-    image: mysql:5.7
+    build:
+      context: ./db
+    image: vweisscobos/db
     command: --innodb-use-native-aio=0
     container_name: db
     restart: always
     tty: true
     volumes:
       - ./mysql:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=nodedb
-      - MYSQL_ROOT_PASSWORD=root
     networks:
       - app
 
